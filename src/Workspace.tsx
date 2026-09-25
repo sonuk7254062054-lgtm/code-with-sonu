@@ -118,11 +118,21 @@ function App() {
     const fileMap = sharedDoc.getMap<Y.Text>('files')
     const commentArray = sharedDoc.getArray<CommentItem>('comments')
     const revisionArray = sharedDoc.getArray<Revision>('revisions')
+    const syncUrl = import.meta.env.VITE_SYNC_URL || (import.meta.env.DEV
+      ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname}:1234`
+      : '')
     try {
       const localUpdate = localStorage.getItem(roomStorageKey)
       if (localUpdate) Y.applyUpdate(sharedDoc, new Uint8Array(JSON.parse(localUpdate) as number[]))
     } catch {
       try { localStorage.removeItem(roomStorageKey) } catch {}
+    }
+    if (!syncUrl && fileMap.size === 0) {
+      for (const [name, content] of Object.entries(starterFiles)) {
+        const text = new Y.Text()
+        text.insert(0, content)
+        fileMap.set(name, text)
+      }
     }
     startTransition(() => {
       setDoc(sharedDoc)
@@ -164,8 +174,7 @@ function App() {
     let retryTimer: number | undefined
     function connect() {
       let synchronized = false
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const socket = new WebSocket(`${protocol}//${window.location.hostname}:1234`)
+      const socket = new WebSocket(syncUrl)
       socketRef.current = socket
       socket.onopen = () => {
         if (disposed) return socket.close()
@@ -193,7 +202,8 @@ function App() {
       }
       socket.onerror = () => socket.close()
     }
-    connect()
+    if (syncUrl) connect()
+    else setConnection('offline')
 
     return () => {
       window.clearTimeout(saveTimer.current)

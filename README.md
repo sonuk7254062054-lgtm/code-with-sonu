@@ -49,13 +49,20 @@ To try collaboration, open the same room URL in another browser window or device
 | `npm run preview` | Preview the built frontend locally |
 | `npm run lint` | Run Oxlint |
 
-For a production-style local run, build the frontend with `npm run build`, start the sync service with `node server.mjs`, and serve the generated `dist/` files with a static web server. The browser must be able to connect to the sync service on port `1234`.
+## Live Demo
+
+The GitHub Pages demo is published at <https://sonuk7254062054-lgtm.github.io/code-with-sonu/>. It runs in browser-only mode with starter files and local browser saving. GitHub Pages cannot run the Node.js WebSocket service, so edits, presence, comments, and snapshots are not shared between visitors in this demo.
+
+The Pages site is built and deployed from `main` by `.github/workflows/deploy-pages.yml`. To enable it in the repository, open **Settings > Pages** and select **GitHub Actions** as the build and deployment source.
+
+For full real-time collaboration, deploy the frontend and `server.mjs` to a WebSocket-capable host, then set the frontend build variable `VITE_SYNC_URL` to the secure WebSocket URL (`wss://...`) of that server.
 
 ## Data and Room Storage
 
 - The sync server stores room documents as binary Yjs updates in `.workspaces/` at the project root. This directory is intentionally ignored by Git.
 - The browser keeps a local room cache and stores the display name and theme preference in `localStorage`.
 - Room IDs and document data are not managed by a hosted database in this project.
+- In the GitHub Pages demo, room data is local to each browser and does not sync to the collaboration server.
 
 ## Security Notes
 
