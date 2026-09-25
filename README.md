@@ -36,7 +36,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The `dev` script starts both Vite and the collaboration server. Vite serves the interface on port `5173`; the WebSocket sync server listens on port `1234`.
+Open     https://sonuk7254062054-lgtm.github.io/code-with-sonu/?room=A43324C7        The `dev` script starts both Vite and the collaboration server. Vite serves the interface on port `5173`; the WebSocket sync server listens on port `1234`.
 
 To try collaboration, open the same room URL in another browser window or device. Room IDs are carried in the `room` query parameter; visiting without one creates a room automatically.
 
